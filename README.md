@@ -2,9 +2,14 @@
 
 This is a WebGL implementation of a real-time renderer for [3D Gaussian Splatting for Real-Time Radiance Field Rendering](https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/), a recently developed technique for taking a set of pictures and generating a photorealistic navigable 3D scene out of it. As it is essentially an extension of rendering point clouds, rendering scenes generated with this technique can be done very efficiently on ordinary graphics hardware- unlike prior comparable techniques such as NeRFs.
 
-You can [try it out here](https://antimatter15.com/splat/).
 
-https://github.com/antimatter15/splat/assets/30054/6534558e-5ddd-4ca5-a4ba-48d7b7c72af2
+# usage
+
+```
+git clone https://github.com/Crazy-Jack/gaussian-splatting-gui
+```
+Navigate to the repo folder and click the `index.html` to open the web browser. This will run the modified code that will display geometric informations. Drag the optimized `.ply` file from the gaussian splatting to the browser in order to visualize it dynamically. The following instruction will be useful too. You are welcome to modify the code to customize it for your need.
+
 
 ## controls
 

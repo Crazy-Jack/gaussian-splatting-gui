@@ -157,6 +157,9 @@ let cameras = [
 
 const camera = cameras[0];
 
+let mouseX = 0; // Global variable for mouse X
+let mouseY = 0; // Global variable for mouse Y
+
 function getProjectionMatrix(fx, fy, width, height) {
 	const znear = 0.2;
 	const zfar = 200;
@@ -680,6 +683,24 @@ async function main() {
 	fps.style.bottom = "10px";
 	fps.style.right = "10px";
 	document.body.appendChild(fps);
+	
+	const camera_pos = document.createElement("div");
+	camera_pos.style.position = "absolute";
+	camera_pos.style.bottom = "10px";
+	camera_pos.style.right = "80px";
+	document.body.appendChild(camera_pos);
+
+	const mouse_loc = document.createElement("div");
+	mouse_loc.style.position = "absolute";
+	mouse_loc.style.bottom = "10px";
+	mouse_loc.style.right = "330px";
+	document.body.appendChild(mouse_loc);
+
+	const focal_len = document.createElement("div");
+	focal_len.style.position = "absolute";
+	focal_len.style.bottom = "10px";
+	focal_len.style.right = "530px";
+	document.body.appendChild(focal_len);
 
 	let projectionMatrix = getProjectionMatrix(
 		camera.fx / 2,
@@ -837,6 +858,10 @@ async function main() {
 				JSON.stringify(
 					viewMatrix.map((k) => Math.round(k * 100) / 100),
 				);
+			
+			// compute position of the camera  
+			console.log(viewMatrix)
+			// console.log(location.hash)
 		} else if (e.key === "p") {
 			carousel = true;
 		}
@@ -882,6 +907,8 @@ async function main() {
 	});
 	document.addEventListener("mousemove", (e) => {
 		e.preventDefault();
+		mouseX = e.clientX;
+		mouseY = e.clientY;
 		if (down == 1) {
 			let inv = invert4(viewMatrix);
 			inv = rotate4(
@@ -1048,6 +1075,18 @@ async function main() {
 		}
 		fps.innerText = Math.round(avgFps) + " fps";
 		lastFrame = now;
+		
+		// compute the eye from the view matrix
+		let inv_viewMatrix = invert4(viewMatrix);
+		let eye_pos = [0, 0, 0];
+		eye_pos[0] = inv_viewMatrix[12];
+		eye_pos[1] = inv_viewMatrix[13];
+		eye_pos[2] = inv_viewMatrix[14];
+		camera_pos.innerText = "  EYE  x: " + Math.round(eye_pos[0] * 100) / 100 + " , y: " + Math.round(eye_pos[1] * 100) / 100 + " , z: " + Math.round(eye_pos[2] * 100) / 100;
+		
+		mouse_loc.innerText = "  MOUSE  x: " + mouseX + " , y: " + mouseY;
+		
+		focal_len.innerText = "Focal Lenght: " + Math.round(camera.fx * 100) / 100;
 		requestAnimationFrame(frame);
 	};
 
@@ -1058,6 +1097,8 @@ async function main() {
 		if (/\.json$/i.test(file.name)) {
 			fr.onload = () => {
 				cameras = JSON.parse(fr.result);
+				console.log("begin")
+				console.log(viewMatrix)
 				viewMatrix = getViewMatrix(cameras[0]);
 				projectionMatrix = getProjectionMatrix(
 					camera.fx / 2,
